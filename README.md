@@ -28,3 +28,17 @@ npm test
 ```
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+# to do
+webpack and how to include dependencies in html
+msg between vue component and non vue
+add controls in vue to control camera, insert objects
+add log vue component - log to page in debug mode
+
+# so far
+Created app with vue cli
+added div not owned by vue, 
+added sample code from three.js
+very crude so far but three.js and vue live together
+  goal to get three.js inside a vue component
+  
