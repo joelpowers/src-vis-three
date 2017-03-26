@@ -1,48 +1,72 @@
 <template>
-  <div>
-    {{msg}}
+  <div id="wgl">
   </div>
 </template>
 
-
 <script>
-  import * as THREE from 'three';
+  import {
+    Scene,
+    PerspectiveCamera,
+    WebGLRenderer,
+    Mesh,
+    BoxGeometry,
+    MeshBasicMaterial,
+  } from 'three';
 
   export default {
     name: 'wglScene',
-    props: {
-      size: {
-        type: Object, // { w, h }
-        required: true,
-      },
-      wgl: { type: THREE.WebGLRenderer },
-      scene: { type: THREE.Scene },
-      camera: { type: THREE.PerspectiveCamera },
-    },
     data() {
       return {
         msg: 'wglScene',
       };
     },
-    created() {
-      this.scene = new THREE.Scene();
+    mounted() {
+      /* eslint-disable no-use-before-define */
+      /* eslint-disable no-console */
+      let mesh;
+      let renderer;
+      let camera;
+      let scene;
+      init();
+      animate();
 
-      this.camera = new THREE.PerspectiveCamera(70, 1, 1, 1000);
-      this.camera.position.y = 150;
-      this.camera.position.z = 500;
+      function init() {
+        console.log('init');
+        const container = document.getElementById('wgl');
+        const containerWidth = 400;
+        const containerHeight = 400;
+        scene = new Scene();
+        console.log('after scene');
 
-      const geometry = new THREE.BoxGeometry(200, 200, 200);
-      for (let i = 0; i < geometry.faces.length; i += 2) {
-        const hex = Math.random() * 0xffffff;
-        geometry.faces[i].color.setHex(hex);
-        geometry.faces[i + 1].color.setHex(hex);
+        camera = new PerspectiveCamera(75, containerWidth / containerHeight, 1, 10000);
+        camera.position.z = 1000;
+
+        const geometry = new BoxGeometry(200, 200, 200);
+        const material = new MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+
+        mesh = new Mesh(geometry, material);
+        scene.add(mesh);
+
+        renderer = new WebGLRenderer();
+        renderer.setSize(containerWidth, containerHeight);
+        container.appendChild(renderer.domElement);
+        renderer.render(scene, camera);
       }
-      const material = new THREE.MeshBasicMaterial({ vertexColors: THREE.FaceColors, overdraw: 0.5 });
-      const cube = new THREE.Mesh(geometry, material);
-      cube.position.y = 150;
-      this.scene.add(cube);
-      // eslint-disable-next-line
-      console.log('wgl created');
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        mesh.rotation.x += 0.01;
+        mesh.rotation.y += 0.02;
+
+        renderer.render(scene, camera);
+      }
     },
   };
 </script>
+<style>
+  #wgl {
+    height: 400px;
+    width: 400px;
+  }
+</style>
