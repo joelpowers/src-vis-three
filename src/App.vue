@@ -7,10 +7,11 @@
 
 <script>
 import viewer from './components/Viewer';
+import cameraControls from './components/CameraControls';
 
 export default {
   name: 'app',
-  components: { viewer },
+  components: { viewer, cameraControls },
 };
 </script>
 

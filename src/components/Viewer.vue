@@ -2,14 +2,13 @@
   <div class="viewer">
     <WGLScene>
     </WGLScene>
-    <SceneControl>
-    </SceneControl>
+    <cameraControls></cameraControls>
   </div>
 </template>
 
 <script>
-  import SceneControl from './SceneControl';
   import WGLScene from './WGLScene';
+  import CameraControls from './CameraControls';
 
   export default {
     name: 'viewer',
@@ -20,7 +19,7 @@
     },
     components: {
       WGLScene,
-      SceneControl,
+      CameraControls,
     },
   };
 </script>
