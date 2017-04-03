@@ -22,12 +22,17 @@
 
 <script>
   import {
-    Scene,
     PerspectiveCamera,
-    WebGLRenderer,
+    TorusKnotGeometry,
     Mesh,
-    BoxGeometry,
-    MeshBasicMaterial,
+    Scene,
+    SpotLight,
+    AmbientLight,
+    DirectionalLight,
+    WebGLRenderer,
+    PlaneBufferGeometry,
+    MeshPhongMaterial,
+    DoubleSide,
   } from 'three';
 
   /* eslint-disable no-console */
@@ -74,23 +79,67 @@
         const container = document.getElementById('wgl');
         const containerWidth = 400;
         const containerHeight = 400;
+
+        camera = new PerspectiveCamera(36, containerWidth / containerHeight, 0.25, 16);
+        camera.position.set(0, 1.3, 6);
+
         scene = new Scene();
+        scene.add(new AmbientLight(0x505050));
+        spot();
+        directLight();
 
-        camera = new PerspectiveCamera(75, containerWidth / containerHeight, 1, 10000);
-        camera.position.z = 1000;
-        // camera = new PerspectiveCamera(36, containerWidth / containerHeight, 0.25, 16);
-
-        const geometry = new BoxGeometry(200, 200, 200);
-        const material = new MeshBasicMaterial({ color: 0xff0000, wireframe: false });
+        const material = new MeshPhongMaterial({ color: 0x80ee10, shininess: 100, side: DoubleSide });
+        const geometry = new TorusKnotGeometry(0.4, 0.08, 95, 20);
 
         mesh = new Mesh(geometry, material);
+        mesh.position.y = 0.8;
         scene.add(mesh);
+        mesh.castShadow = true;
 
+        plane();
         renderer = new WebGLRenderer();
         renderer.setSize(containerWidth, containerHeight);
         container.appendChild(renderer.domElement);
-        // scene.add(ground());
         renderer.render(scene, camera);
+      }
+
+      function plane() {
+        const ground = new Mesh(
+          new PlaneBufferGeometry(9, 9, 1, 1),
+          new MeshPhongMaterial({
+            color: 0xa0adaf, shininess: 150 }));
+        ground.x = 300;
+        ground.rotation.x = -Math.PI / 2; // rotates X/Y to X/Z
+        ground.receiveShadow = true;
+        scene.add(ground);
+      }
+
+      function directLight() {
+        const dirLight = new DirectionalLight(0x55505a, 1);
+        dirLight.position.set(0, 3, 0);
+        dirLight.castShadow = true;
+        dirLight.shadow.camera.near = 1;
+        dirLight.shadow.camera.far = 10;
+        dirLight.shadow.camera.right = 1;
+        dirLight.shadow.camera.left = -1;
+        dirLight.shadow.camera.top = 1;
+        dirLight.shadow.camera.bottom = -1;
+        dirLight.shadow.mapSize.width = 512;
+        dirLight.shadow.mapSize.height = 512;
+        scene.add(dirLight);
+      }
+
+      function spot() {
+        const spotLight = new SpotLight(0xffffff);
+        spotLight.angle = Math.PI / 5;
+        spotLight.penumbra = 0.2;
+        spotLight.position.set(2, 3, 3);
+        spotLight.castShadow = true;
+        spotLight.shadow.camera.near = 3;
+        spotLight.shadow.camera.far = 10;
+        spotLight.shadow.mapSize.width = 500;
+        spotLight.shadow.mapSize.height = 500;
+        scene.add(spotLight);
       }
 
       function animate() {

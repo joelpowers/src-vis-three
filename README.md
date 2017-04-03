@@ -32,8 +32,10 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 # to do
 webpack and how to include dependencies in html
 msg between vue component and non vue
+  communicate between siblings through parent or use vueex?
 add controls in vue to control camera, insert objects
 add log vue component - log to page in debug mode
+need somekind of layout - flexbox?  Bootstrap?
 
 # so far
 Created app with vue cli
