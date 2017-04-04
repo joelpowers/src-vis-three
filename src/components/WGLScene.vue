@@ -24,6 +24,7 @@
   import {
     PerspectiveCamera,
     TorusKnotGeometry,
+    BoxBufferGeometry,
     Mesh,
     Scene,
     SpotLight,
@@ -43,6 +44,9 @@
   /* eslint-disable prefer-arrow-callback */
 
   let camera;
+  let mesh;
+  let scene;
+
   function degToRad(deg) {
     return (deg * Math.PI) / 180;
   }
@@ -69,9 +73,7 @@
     },
 
     mounted() {
-      let mesh;
       let renderer;
-      let scene;
       init();
       animate();
 
@@ -87,27 +89,43 @@
         scene.add(new AmbientLight(0x505050));
         spot();
         directLight();
-
-        const material = new MeshPhongMaterial({ color: 0x80ee10, shininess: 100, side: DoubleSide });
-        const geometry = new TorusKnotGeometry(0.4, 0.08, 95, 20);
-
-        mesh = new Mesh(geometry, material);
-        mesh.position.y = 0.8;
-        scene.add(mesh);
-        mesh.castShadow = true;
+        // knot();
 
         plane();
+        knot();
+        box(0, 0.5, -2.5);
+        box(-3.5, 0.5, -3.2);
         renderer = new WebGLRenderer();
         renderer.setSize(containerWidth, containerHeight);
         container.appendChild(renderer.domElement);
         renderer.render(scene, camera);
       }
 
+      function box(x1, y1, z1) {
+        const material = new MeshPhongMaterial({ color: 0x00cc00 });
+        const geometry = new BoxBufferGeometry(1, 1, 1);
+        const m = new Mesh(geometry, material);
+        m.position.y = y1;
+        m.position.z = z1;
+        m.position.x = x1;
+        scene.add(m);
+      }
+
+      function knot() {
+        const material = new MeshPhongMaterial({ color: 0x80ee10, shininess: 100, side: DoubleSide });
+        const geometry = new TorusKnotGeometry(0.4, 0.08, 95, 20);
+        mesh = new Mesh(geometry, material);
+        mesh.position.y = 2.7;
+        mesh.position.x = 1.2;
+        mesh.position.z = 1;
+        scene.add(mesh);
+        mesh.castShadow = true;
+      }
+
       function plane() {
         const ground = new Mesh(
           new PlaneBufferGeometry(9, 9, 1, 1),
-          new MeshPhongMaterial({
-            color: 0xa0adaf, shininess: 150 }));
+          new MeshPhongMaterial({ color: 0xa0adaf, shininess: 150 }));
         ground.x = 300;
         ground.rotation.x = -Math.PI / 2; // rotates X/Y to X/Z
         ground.receiveShadow = true;
@@ -144,14 +162,13 @@
 
       function animate() {
         requestAnimationFrame(animate);
-
         mesh.rotation.x += 0.01;
         mesh.rotation.y += 0.02;
-
         renderer.render(scene, camera);
       }
     },
   };
+
 </script>
 <style>
   #wgl {
